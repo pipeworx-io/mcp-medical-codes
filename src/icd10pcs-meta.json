@@ -1,0 +1,8 @@
+{
+  "fiscalYear": 2026,
+  "effective": "2025-10-01",
+  "source": "https://www.cms.gov/files/zip/2026-icd-10-pcs-order-file-long-and-abbreviated-titles.zip",
+  "sourceFile": "icd10pcs_order_2026.txt",
+  "note": "CMS ICD-10-PCS order file, long titles, billable codes only. Public domain (17 U.S.C. 105).",
+  "count": 79115
+}

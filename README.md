@@ -2,7 +2,7 @@
 
 Medical codes MCP.
 
-Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents to 1476+ live data sources.
+Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents to 1679+ live data sources.
 
 ## Tools
 
@@ -11,6 +11,8 @@ Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents 
 | `search_icd10` | Search ICD-10-CM diagnosis/billing codes by keyword or code (keyless, offline source: NLM). E.g. "type 2 diabetes" -> [{code:"E11.9", description:"Type 2 diabetes mellitus without complications"}]. |
 | `search_loinc` | Search LOINC codes (lab tests & clinical observations) by keyword (keyless). E.g. "hemoglobin a1c" -> LOINC number + long common name. |
 | `search_medical_terms` | Search clinical term lists by keyword (keyless): system = "conditions" (problem/diagnosis names), "procedures" (procedure names), or "drugs" (RxTerms drug display names). |
+| `search_icd10pcs` | Search ICD-10-PCS inpatient procedure codes by keyword or code prefix (keyless, offline: CMS FY${pcsMeta.fiscalYear} order file, ${pcsMeta.count} billable codes). Diagnoses are search_icd10; PCS is what a hospital bills the procedure itself under. E.g. "hip replacement" -> [{code:"0SR9019", description:"Replacement of Right Hip Joint with Metal Synthetic Substitute, Cemented, Open Approach"}]; "0SR9" returns that whole family. |
+| `get_icd10pcs` | Look up one exact 7-character ICD-10-PCS code, plus the sibling codes for the same procedure on the same body part (keyless, offline: CMS FY${pcsMeta.fiscalYear}). E.g. "0SR9019" -> its title plus the other 0SR9* right-hip-replacement codes, which is how you find the uncemented or ceramic alternative to a code you already have. |
 
 ## Quick Start
 
@@ -56,9 +58,45 @@ directly, instead of just this one's:
 }
 ```
 
-Both URLs reach the same gateway and the same 1476+ data sources. The
+Both URLs reach the same gateway and the same 1679+ data sources. The
 only difference is which pack's tools are listed **directly**; `ask_pipeworx`
 reaches all of them from either one.
+
+## No MCP client? Call it over HTTP
+
+```bash
+curl -X POST https://gateway.pipeworx.io/v1/tools/search_icd10 \
+  -H 'Content-Type: application/json' \
+  -d '{"query":"type 2 diabetes"}'
+```
+
+No account needed for the first calls. Inspect any tool: `GET https://gateway.pipeworx.io/v1/tools/search_icd10`. Find one: `POST https://gateway.pipeworx.io/v1/tools/search_packs` with `{"query":"..."}`.
+
+## Standalone (no gateway account)
+
+This package also runs as a local stdio MCP server — no Pipeworx account, no
+gateway round-trip:
+
+```json
+{
+  "mcpServers": {
+    "medical-codes": {
+      "command": "npx",
+      "args": ["-y", "@pipeworx/mcp-medical-codes"]
+    }
+  }
+}
+```
+
+Or run it directly to confirm it starts:
+
+```bash
+npx -y @pipeworx/mcp-medical-codes
+```
+
+It speaks MCP over stdin/stdout and answers `initialize`/`tools/list`/`tools/call`
+for **only** this pack's tools — none of the shared meta-tools the gateway
+connection above adds. Same source, same tools, no ask_pipeworx routing.
 
 ## Using with ask_pipeworx
 
@@ -79,13 +117,3 @@ The gateway picks the right tool and fills the arguments automatically.
 ## License
 
 MIT
-
-## No MCP client? Call it over HTTP
-
-```bash
-curl -X POST https://gateway.pipeworx.io/v1/tools/search_icd10 \
-  -H 'Content-Type: application/json' \
-  -d '{"query":"type 2 diabetes"}'
-```
-
-No account needed for the first calls. Inspect any tool: `GET https://gateway.pipeworx.io/v1/tools/search_icd10`. Find one: `POST https://gateway.pipeworx.io/v1/tools/search_packs` with `{"query":"..."}`.

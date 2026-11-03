@@ -1,6 +1,6 @@
 {
   "name": "@pipeworx/mcp-medical-codes",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Medical codes MCP.",
   "type": "module",
   "main": "lib/index.js",
@@ -27,7 +27,7 @@
     "mode": "gateway",
     "slug": "medical-codes",
     "gatewaySlug": "medical-codes",
-    "sourceHash": "v1-1f2619927cb1535df35a33415494775496fbea4f8b4d35c6355810e49687377f",
-    "sourceCommit": "5c89d6abb778d45da5d92002eb251978622bedf9"
+    "sourceHash": "v1-bed1ebdee35ca9716b0c1aa21687750d2f8ee4884e924c745f59487190252307",
+    "sourceCommit": "56cf550e46fed96c0101a3877ccaf8357eecf016"
   }
 }
